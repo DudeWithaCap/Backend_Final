@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
+const path = require('path');
 const app = express();
 const bookRoutes = require('./routes/bookRouter');
 const publisherRoutes = require('./routes/publisherRouter');
@@ -36,13 +37,20 @@ app.use('/books', bookRoutes);
 app.use('/publishers', publisherRoutes);
 app.use('/orders', orderRoutes);
 
-app.use('/frontend', express.static('frontend'));
+app.use('/frontend', express.static(path.join(__dirname, 'frontend')));
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'main.html'));
+});
 
 app.use(errorLogger);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-  console.log("Main page http://127.0.0.1:3000/frontend/main.html");
-  console.log("Dashboard http://127.0.0.1:3000/frontend/index.html");
-  console.log("Login/SignUp http://127.0.0.1:3000/frontend/auth.html");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Main page http://127.0.0.1:${PORT}/frontend/main.html`);
+  console.log(`Dashboard http://127.0.0.1:${PORT}/frontend/index.html`);
+  console.log(`Login/SignUp http://127.0.0.1:${PORT}/frontend/auth.html`);
 });
